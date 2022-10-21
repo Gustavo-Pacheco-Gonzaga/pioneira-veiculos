@@ -1,0 +1,7 @@
+{
+    "/api/*": {
+        "target": "http://evento.pioneiraprotecaoveicular.com.br/sistema/",
+        "secure": false,
+        "logLevel": "debug"
+    }
+}

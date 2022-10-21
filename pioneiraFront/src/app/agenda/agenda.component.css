@@ -1,0 +1,364 @@
+#main-section-div {
+    box-shadow: 0 0 9px -3px gray;
+    padding: 25px;
+    border-radius: 4px;
+    width: 100%;
+    background: white;
+    position: relative;
+}
+
+#main-section-div h1 {
+    margin-bottom: 40px;
+    font-size: 30px;
+}
+
+#main-section-header {
+    width: 100%;
+    justify-content: space-around;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: #0E6E38 1px solid;
+}
+
+.main-section-header-div {
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 25%;
+    margin-left: 25px;
+    padding: 0 0px 10px 0;
+}
+
+.main-section-header-div::after {
+    position: absolute;
+    content: "";
+    width: 1px;
+    height: 100%;
+    right: -5%;
+    top: 0;
+    background-color: #0e6e382b;
+    border-radius: 1px;
+}
+
+.main-section-header-div-no-after::after {
+    width: 0;
+    height: 0;
+}
+
+
+.main-section-header-div div {
+    align-items: center;
+    margin-right: 20px;
+}
+
+.sem-after::after {
+    display: none !important;
+}
+
+.item-linha {
+    width: 25%;
+    position: relative;
+    padding-left: 35px;
+}
+
+.item-linha::after {
+    position: absolute;
+    content: "";
+    width: 1px;
+    height: 100%;
+    right: -5%;
+    top: 0;
+    background-color: #0E6E38;
+    border-radius: 1px;
+}
+
+#div-direcionamento {
+    padding: 0;
+}
+
+.linha {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.item {
+    margin-top: 10px;
+    cursor: pointer;
+    width: 100%;
+    background: white;
+    padding: 10px;
+    border: 3px solid;
+    border-radius: 4px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.item-div-p{
+    justify-content: space-between; 
+    width: 100%;
+    align-items: center;
+}
+
+.item p {
+    font-weight: bold;
+}
+
+#main-section-div .input-div {
+    padding: 10px 0;
+    width: 100%;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+#main-section-div .input-div label {
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+#main-section-div .input-div input,
+#main-section-div .input-div textarea {
+    padding: 10px;
+    width: 75%;
+    border: none;
+    resize: none;
+    box-shadow: 0 0 2px 0px #c7c7c7;
+}
+
+#main-section-div .input-div input:focus,
+#main-section-div .input-div textarea:focus {
+    box-shadow: 0 0 3px 0px #7c7c7c;
+}
+
+.input-error {
+    box-shadow: 0 0 2px 0px #ff0000 !important;
+    background: #fff4f4 !important;
+}
+
+#main-section-div .input-div div,
+#main-section-div .erro-div div {
+    width: 75%;
+}
+
+button:disabled {
+    cursor: default;
+    opacity: .8;
+}
+
+button:disabled:hover {
+    background: #0E6E38;
+}
+
+#main-section-div .erro-div {
+    padding: 0;
+    width: 100%;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+#main-section-div .erro-div .erro-message {
+    color: #ff0000;
+    font-size: 11px;
+}
+
+#evento-criado-mensagem-div {
+    position: absolute;
+    padding: 10px 20px;
+    top: -20px;
+    left: 0;
+    border-radius: 2px;
+    background: #0E6E38;
+    width: 100%;
+    justify-content: space-between;
+    transition: all .4s;
+}
+
+#evento-criado-mensagem-div p {
+    color: white;
+    font-weight: bold;
+}
+
+#evento-criado-mensagem-div button {
+    border: none;
+    background: transparent;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+}
+
+.popup-confirmar {
+    position: fixed;
+    width: 70%;
+    background: white;
+    box-shadow: 0 0 5px -2px grey;
+    padding: 50px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+}
+
+.mini-popup {
+    width: unset !important;
+}
+
+.popup-confirmar h3 {
+    color: #0E6E38;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.popup-confirmar span {
+    padding-bottom: 30px;
+}
+
+.gray-button {
+    margin: 0 20px;
+}
+
+.popup-confirmar-background {
+    background: rgba(128, 128, 128, 0.308);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#input-open-lista-mecanica {
+    position: relative;
+    background: white;
+}
+
+#button-open-lista-mecanica {
+    position: absolute;
+    right: 70px;
+    color: #0e6e38;
+    font-weight: 700;
+    border-radius: 100%;
+    box-shadow: 0 0 5px -2px grey;
+    background: white;
+    border: none;
+    top: 61.5%;
+    width: 20px;
+    display: flex;
+    height: 20px;
+    justify-content: center;
+    transform: translateY(-50%) rotate(90deg);
+    cursor: pointer;
+}
+
+#button-close-lista-mecanica {
+    position: absolute;
+    right: 70px;
+    color: #0e6e38;
+    font-weight: 700;
+    border-radius: 100%;
+    box-shadow: 0 0 5px -2px grey;
+    background: white;
+    border: none;
+    top: 61.5%;
+    width: 20px;
+    display: flex;
+    height: 20px;
+    justify-content: center;
+    transform: translateY(-50%) rotate(-90deg);
+    cursor: pointer;
+}
+
+#div-lista-mecanica {
+    position: absolute;
+    padding: 5px;
+    box-shadow: 0 0 6px -2px grey;
+    right: 50px;
+    width: 69.3% !important;
+    background: white;
+    top: 260px;
+    z-index: 1;
+    max-height: 200px !important;
+    overflow-y: scroll;
+}
+
+#div-lista-mecanica div {
+    width: 100% !important;
+    border-radius: 2px;
+    padding: 8px 14px;
+    transition: all .3s;
+}
+
+#div-lista-mecanica div p {
+    font-weight: bold;
+    transition: all .3s;
+}
+
+#div-lista-mecanica div:hover {
+    background: #0E6E38;
+    cursor: pointer;
+}
+
+#div-lista-mecanica div:hover p {
+    color: white;
+    cursor: pointer;
+}
+
+.popup-confirmar .green-button,
+.popup-confirmar .blue-button {
+    width: 160px;
+}
+
+#evento-criado-mensagem-div {
+    position: absolute;
+    padding: 10px 20px;
+    top: -20px;
+    left: 0;
+    border-radius: 2px;
+    background: #0E6E38;
+    width: 100%;
+    justify-content: space-between;
+    transition: all .4s;
+}
+
+#evento-criado-mensagem-div p {
+    color: white;
+    font-weight: bold;
+}
+
+#evento-criado-mensagem-div button {
+    border: none;
+    background: transparent;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+}
+
+button:disabled {
+    cursor: default;
+    opacity: .8;
+}
+
+.blue-button:disabled:hover {
+    background: #0e3d6e;
+}
+
+#background-popup {
+    background: rgba(102, 102, 102, 0.137);
+    width: 100%;
+    position: fixed;
+    height: 100%;
+    z-index: 4;
+    top: 0;
+    left: 0;
+    display: none;
+}
+
+.show-background-popup {
+    display: block !important;
+}
+
+.popup-input-div {
+    justify-content: space-between;
+    align-items: center;
+}
+
+.popup-input-div button {
+    margin: 0;
+}

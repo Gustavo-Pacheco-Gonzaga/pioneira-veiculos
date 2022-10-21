@@ -1,0 +1,110 @@
+#main-section-div {
+    box-shadow: 0 0 9px -3px gray;
+    padding: 50px;
+    border-radius: 4px;
+    width: 1068px;
+    background: white;
+    position: relative;
+}
+
+#main-section-div h1 {
+    margin-bottom: 40px;
+    font-size: 30px;
+}
+
+#main-section-div .input-div {
+    padding: 10px 0;
+    width: 100%;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+#main-section-div .input-div label {
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+#main-section-div .input-div input,
+#main-section-div .input-div textarea {
+    padding: 10px;
+    width: 75%;
+    border: none;
+    resize: none;
+    box-shadow: 0 0 2px 0px #c7c7c7;
+}
+
+#main-section-div .input-div input:focus,
+#main-section-div .input-div textarea:focus {
+    box-shadow: 0 0 3px 0px #7c7c7c;
+}
+
+.input-error {
+    box-shadow: 0 0 2px 0px #ff0000 !important;
+    background: #fff4f4 !important;
+}
+
+#main-section-div .input-div div,
+#main-section-div .erro-div div {
+    width: 75%;
+}
+
+button:disabled {
+    cursor: default;
+    opacity: .8;
+}
+
+button:disabled:hover {
+    background: #0E6E38;
+}
+
+#main-section-div .erro-div {
+    padding: 0;
+    width: 100%;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+#main-section-div .erro-div .erro-message {
+    color: #ff0000;
+    font-size: 11px;
+}
+
+#evento-criado-mensagem-div {
+    position: absolute;
+    padding: 10px 20px;
+    top: -20px;
+    left: 0;
+    border-radius: 2px;
+    background: #0E6E38;
+    width: 100%;
+    justify-content: space-between;
+    transition: all .4s;
+}
+
+#evento-criado-mensagem-div p {
+    color: white;
+    font-weight: bold;
+}
+
+#evento-criado-mensagem-div button {
+    border: none;
+    background: transparent;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+}
+
+.radio-div{
+    align-items: center;
+    margin-top: 5px;
+}
+
+.radio-div label{
+    margin-top: 0 !important;
+}
+
+.radio-div input{
+    width: 15px !important;
+    margin-right: 10px !important;
+    box-shadow: none !important;
+}

@@ -1,0 +1,114 @@
+<section id="side-menu-section" class="flex column" [class.menu-open]="menu == 1">
+    <a id="menu-logo" routerLink="#"><img src="./assets/imagens/logo.png"></a>
+    <div id="side-menu-div">
+        <nav>
+            <ul>
+                <a routerLink="">
+                    <li>Agenda</li>
+                </a>
+                <a routerLink="/mecanica">
+                    <li>Lista de Mecânicas</li>
+                </a>
+                <a routerLink="/gerar-evento">
+                    <li class="active-link">Gerar Evento</li>
+                </a>
+                <a routerLink="/relatorio-veiculo">
+                    <li>Relatório de Veículos</li>
+                </a>
+                <a routerLink="/veiculo-assistencial">
+                    <li>Veículos Assistenciais</li>
+                </a>
+            </ul>
+        </nav>
+    </div>
+</section>
+<div class="flex column main-content" [class.main-content-menu-open]="menu == 1">
+    <section id="top-menu-section" class="flex">
+        <img (click)="toggleMenu()" id="menu-control" src="./assets/imagens/menu-icon.png">
+    </section>
+
+    <section class="flex main-section" [class.main-section-menu-open]="menu == 1">
+        <div id="main-section-div" class="flex column">
+            <div *ngIf="mensagem" id="evento-criado-mensagem-div" class="flex">
+                <p>{{mensagem}}</p>
+                <button (click)="clearMensagem()">X</button>
+            </div>
+            <h1 class="font-green">GERAR EVENTO</h1>
+            <form class="flex column" (ngSubmit)="gerarEvento()" [formGroup]="formEvento">
+                <div class="flex input-div">
+                    <label for="numero_evento">Número do evento</label>
+                    <input [class.input-error]="erro.numero_evento" type="text" name="numero_evento" placeholder="Campo obrigatório"
+                        formControlName="numero_evento">
+                </div>
+                <div class="flex input-div">
+                    <label for="placa">Placa do veículo</label>
+                    <input [class.input-error]="erro.placa_veiculo" type="text" name="placa" placeholder="BLW3G30"
+                        formControlName="placa_veiculo">
+                </div>
+                <div class="flex input-div">
+                    <label for="modelo">Modelo do veículo</label>
+                    <input [class.input-error]="erro.modelo_veiculo" type="text" name="modelo" placeholder="Palio Fire"
+                        formControlName="modelo_veiculo">
+                </div>
+                <div class="flex input-div">
+                    <label for="data">Data de abertura</label>
+                    <input [class.input-error]="erro.data_abertura" type="date" name="data" placeholder="2022-06-10"
+                        formControlName="data_abertura">
+                </div>
+                <div class="flex input-div">
+                    <label for="desc">Descrição</label>
+                    <textarea [class.input-error]="erro.descricao " name="desc" placeholder="BLW3G30"
+                        formControlName="descricao" rows="5"></textarea>
+                </div>
+                <div class="flex input-div">
+                    <label for="veiculo_assistencial">Veículo assistencial</label>
+                    <div class="flex column">
+                        <div class="flex radio-div">
+                            <input type="radio" name="veiculo_assistencial" id="nulo" formControlName="veiculo_assistencial" value="">
+                            <label class="fs-13" for="nulo">Não possui</label>
+                        </div>
+                        <div class="flex radio-div">
+                            <input type="radio" name="veiculo_assistencial" id="dias7" formControlName="veiculo_assistencial" value="7">
+                            <label class="fs-13" for="dias7">7 dias</label>
+                        </div>
+                        <div class="flex radio-div">
+                            <input type="radio" name="veiculo_assistencial" id="dias15" formControlName="veiculo_assistencial" value="15">
+                            <label class="fs-13" for="dias15">15 dias</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div *ngIf="erro.placa_veiculo" class="flex erro-div">
+                    <label></label>
+                    <div>
+                        <span class="erro-message">{{erro.placa_veiculo}}</span>
+                    </div>
+                </div>
+                <div *ngIf="erro.modelo_veiculo" class="flex erro-div">
+                    <label></label>
+                    <div>
+                        <span class="erro-message">{{erro.modelo_veiculo}}</span>
+                    </div>
+                </div>
+                <div *ngIf="erro.data_abertura" class="flex erro-div">
+                    <label></label>
+                    <div>
+                        <span class="erro-message">{{erro.data_abertura}}</span>
+                    </div>
+                </div>
+                <div *ngIf="erro.descricao" class="flex erro-div">
+                    <label></label>
+                    <div>
+                        <span class="erro-message">{{erro.descricao}}</span>
+                    </div>
+                </div>
+                <div class="flex input-div">
+                    <label></label>
+                    <div>
+                        <button [disabled]="formEvento.invalid" class="green-button">Criar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>

@@ -1,0 +1,87 @@
+<section id="side-menu-section" class="flex column" [class.menu-open]="menu == 1">
+    <a id="menu-logo" routerLink="#"><img src="./assets/imagens/logo.png"></a>
+    <div id="side-menu-div">
+        <nav>
+            <ul>
+                <a routerLink="">
+                    <li>Agenda</li>
+                </a>
+                <a routerLink="/mecanica">
+                    <li class="active-link">Lista de Mecânicas</li>
+                </a>
+                <a routerLink="/gerar-evento">
+                    <li>Gerar Evento</li>
+                </a>
+                <a routerLink="/relatorio-veiculo">
+                    <li>Relatório de Veículos</li>
+                </a>
+                <a routerLink="/veiculo-assistencial">
+                    <li>Veículos Assistenciais</li>
+                </a>
+            </ul>
+        </nav>
+    </div>
+</section>
+<div class="flex column main-content" [class.main-content-menu-open]="menu == 1">
+    <section id="top-menu-section" class="flex">
+        <img (click)="toggleMenu()" id="menu-control" src="./assets/imagens/menu-icon.png">
+    </section>
+    
+    <section class="flex column main-section" [class.main-section-menu-open]="menu == 1">
+        <button class="green-button" type="button" (click)="openPopupAdicionar()">Adicionar Mecânica</button>
+        <div id="main-section-div" class="flex">
+            <ng-container *ngIf="mecanica">
+                <ng-container *ngFor="let mecan of mecanica">
+                    <div (click)="openPopupRemover(mecan.id)" class="linha">
+                        <h3 class="fs-16 font-green">{{mecan.nome}}</h3>
+                        <div class="flex column">
+                            <ng-container *ngFor="let evento of mecan.mecanica_evento">
+                                <ng-container *ngIf="evento.finalizado != 1">
+                                    <div>
+                                        <p [ngStyle]="{'background-color': evento.cor}" class="fs-16 font-white">
+                                            {{evento.modelo_veiculo}} -
+                                            {{evento.placa_veiculo}}</p>
+                                    </div>
+                                </ng-container>
+                            </ng-container>
+                        </div>
+                    </div>
+                </ng-container>
+            </ng-container>
+        </div>
+    </section>
+
+    <!-- Popup -->
+    <div *ngIf="popupAdicionar == 1" class="flex column popup-confirmar">
+        <h3 class="fs-30">Adicionar Mecânica</h3>
+        <form class="flex column" (ngSubmit)="adicionar()" [formGroup]="formAdicionar">
+            <div class="flex input-div">
+                <label for="modelo">Nome da Mecânica</label>
+                <input [class.input-error]="erro.nome" type="text" name="modelo" formControlName="nome"
+                    placeholder="Nome da Mecânica">
+            </div>
+            <div class="flex input-div">
+                <label for="desc">Cidade</label>
+                <input [class.input-error]="erro.cidade" type="text" name="data" formControlName="cidade"
+                    placeholder="Cidade">
+            </div>
+            <div class="flex input-div">
+                <label></label>
+                <div>
+                    <button class="green-button" [disabled]="formAdicionar.invalid">Criar</button>
+                    <button class="gray-button" type="button" (click)="closePopup()">Voltar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div *ngIf="popupRemover == 1" class="flex column popup-confirmar mini-popup">
+        <h3 class="fs-30">Deseja remover essa mecânica?</h3>
+        <div>
+            <button class="green-button" (click)="remover()">Remover</button>
+            <button class="gray-button" type="button" (click)="closePopup()">Voltar</button>
+        </div>
+    </div>
+    <div id="background-popup" [class.show-background-popup]="popupAdicionar == 1 || popupRemover == 1">
+    </div>
+</div>

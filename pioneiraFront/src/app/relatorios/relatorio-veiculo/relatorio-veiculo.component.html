@@ -1,0 +1,57 @@
+<section id="side-menu-section" class="flex column" [class.menu-open]="menu == 1">
+    <a id="menu-logo" routerLink="#"><img src="./assets/imagens/logo.png"></a>
+    <div id="side-menu-div">
+        <nav>
+            <ul>
+                <a routerLink="">
+                    <li>Agenda</li>
+                </a>
+                <a routerLink="/mecanica">
+                    <li>Lista de Mecânicas</li>
+                </a>
+                <a routerLink="/gerar-evento">
+                    <li>Gerar Evento</li>
+                </a>
+                <a routerLink="/relatorio-veiculo">
+                    <li class="active-link">Relatório de Veículos</li>
+                </a>
+                <a routerLink="/veiculo-assistencial">
+                    <li>Veículos Assistenciais</li>
+                </a>
+            </ul>
+        </nav>
+    </div>
+</section>
+<div class="flex column main-content" [class.main-content-menu-open]="menu == 1">
+    <section id="top-menu-section" class="flex">
+        <img (click)="toggleMenu()" id="menu-control" src="./assets/imagens/menu-icon.png">
+    </section>
+
+    <form class="flex" [class.search-form-menu-open]="menu == 1" id="search-form" (ngSubmit)="search()" [formGroup]="formSearch">
+        <input type="text" formControlName="placa_veiculo" placeholder="Digite a placa do veículo">
+        <button><img src="./assets/imagens/search.png"></button>
+    </form>
+    
+    <section class="flex main-section" [class.main-section-menu-open]="menu == 1">
+        <div id="main-section-div" class="flex column">
+            <h1 class="font-green">RELATÓRIO DO VEICULO</h1>
+            <ng-container *ngIf="evento">
+                <ng-container *ngIf="evento == ''">
+                    <span>Nenhum evento encontrado, verifique a placa e tente novamente</span>
+                </ng-container>
+                <ng-container *ngIf="evento != ''">
+                    <span>{{evento[0].modelo_veiculo}} - {{evento[0].placa_veiculo}}</span>
+                    <ng-container *ngFor="let e of evento">
+                        <div (click)="redirect(e.id)">
+                            <h3>{{e.data_abertura|date: 'dd/MM/YYYY'}}</h3>
+                            <p>{{e.descricao}}</p>
+                        </div>
+                    </ng-container>
+                </ng-container>
+            </ng-container>
+            <ng-container *ngIf="!evento">
+                <span>Use a barra de pesquisa para buscar por um veículo</span>
+            </ng-container>
+        </div>
+    </section>
+</div>

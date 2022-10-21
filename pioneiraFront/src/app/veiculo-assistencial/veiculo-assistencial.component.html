@@ -1,0 +1,181 @@
+<section id="side-menu-section" class="flex column" [class.menu-open]="menu == 1">
+    <a id="menu-logo" routerLink="#"><img src="./assets/imagens/logo.png"></a>
+    <div id="side-menu-div">
+        <nav>
+            <ul>
+                <a routerLink="">
+                    <li>Agenda</li>
+                </a>
+                <a routerLink="/mecanica">
+                    <li>Lista de Mecânicas</li>
+                </a>
+                <a routerLink="/gerar-evento">
+                    <li>Gerar Evento</li>
+                </a>
+                <a routerLink="/relatorio-veiculo">
+                    <li>Relatório de Veículos</li>
+                </a>
+                <a routerLink="/veiculo-assistencial">
+                    <li class="active-link">Veículos Assistenciais</li>
+                </a>
+            </ul>
+        </nav>
+    </div>
+</section>
+<div class="flex column main-content" [class.main-content-menu-open]="menu == 1">
+    <section id="top-menu-section" class="flex">
+        <img (click)="toggleMenu()" id="menu-control" src="./assets/imagens/menu-icon.png">
+    </section>
+    <section class="flex main-section" [class.main-section-menu-open]="menu == 1">
+        <div id="main-section-div" class="flex column">
+            <div *ngIf="mensagem" id="evento-criado-mensagem-div" class="flex">
+                <p>{{mensagem}}</p>
+                <button (click)="clearMensagem()">X</button>
+            </div>
+            <div id="main-section-header" class="flex">
+                <div class="flex column">
+                    <h2 class="fs-24 font-green">Veículos disponíveis</h2>
+                </div>
+                <div class="flex column">
+                    <h2 class="fs-24 font-green">Veículos em uso</h2>
+                </div>
+            </div>
+            <div id="main-section-table" class="flex">
+                <div id="div-disponiveis" class="item-linha">
+                    <ng-container *ngIf="empresa">
+                        <ng-container *ngFor="let empre of empresa">
+                            <div *ngIf="empre.ativo == 0" (click)="openPopup(empre.id, 'empresa', '')" class="linha">
+                                <div class="flex item">
+                                    <div class="flex column">
+                                        <p class="fs-17 font-green">{{empre.modelo}} - {{empre.placa}}</p>
+                                        <p class="fs-14 font-gray">{{empre.cidade}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </div>
+                <div id="div-uso" class="item-linha sem-after">
+                    <ng-container *ngIf="assistencial">
+                        <div *ngFor="let assist of assistencial" class="linha">
+                            <div
+                                (click)="openPopup(assist.veiculo_assistencial_veiculo_empresa.id, 'assistencial', assist.id)">
+                                <div class="flex column item"
+                                    [ngStyle]="validarDataFundo(assist.data_saida, assist.cor, assist.dias_emprestimo)">
+                                    <div class="flex column">
+                                        <p class="fs-17"
+                                            [ngStyle]="validarDataCor(assist.data_saida, assist.cor, assist.dias_emprestimo)">
+                                            {{assist.veiculo_assistencial_veiculo_empresa.modelo}} -
+                                            {{assist.veiculo_assistencial_veiculo_empresa.placa}}</p>
+                                    </div>
+                                    <div class="flex column">
+                                        <p class="fs-26"
+                                            [ngStyle]="validarDataCor(assist.data_saida, assist.cor, assist.dias_emprestimo)">
+                                            {{assist.nome_condutor}}
+                                        <p class="fs-14"
+                                            [ngStyle]="validarDataCor(assist.data_saida, '#979797', assist.dias_emprestimo)">
+                                            {{assist.cidade}}</p>
+                                    </div>
+                                </div>
+                                <div class="flex data-assistencial"
+                                    [ngStyle]="validarDataBottom(assist.data_saida, assist.cor, assist.dias_emprestimo)">
+                                    <p class="fs-13"
+                                        [ngStyle]="validarDataBottomText(assist.data_saida, 'white', assist.dias_emprestimo)">
+                                        Disponível em {{setDataLimite(assist.data_saida, assist.dias_emprestimo)|date:
+                                        'dd/MM'}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+
+        <!-- Popup -->
+        <div *ngIf="popupAlugar == 1" class="flex column popup-confirmar">
+            <h3 class="fs-30">Alugar Veículo</h3>
+            <ng-container *ngIf="veiculoAtual">
+                <span>{{veiculoAtual.modelo}} - {{veiculoAtual.placa}}</span>
+            </ng-container>
+            <form class="flex column" (ngSubmit)="alugar()" [formGroup]="formAlugar">
+                <div class="flex input-div">
+                    <label for="modelo">Nome do condutor</label>
+                    <input [class.input-error]="erro.nome_condutor" type="text" name="modelo"
+                        placeholder="Nome do Condutor" formControlName="nome_condutor">
+                </div>
+                <div class="flex input-div">
+                    <label for="data">Quantidade de dias</label>
+                    <input [class.input-error]="erro.dias_emprestimo" type="number" name="data"
+                        formControlName="dias_emprestimo" placeholder="Quantidade de dias">
+                </div>
+                <div class="flex input-div">
+                    <label for="desc">Data de saída</label>
+                    <input [class.input-error]="erro.data_saida" type="date" name="data" placeholder="YYYY-MM-dd"
+                        formControlName="data_saida">
+                </div>
+                <div class="flex input-div">
+                    <label for="desc">Cidade</label>
+                    <input [class.input-error]="erro.cidade" type="text" name="data" formControlName="cidade"
+                        placeholder="Cidade">
+                </div>
+                <div class="flex input-div">
+                    <label></label>
+                    <div>
+                        <button class="green-button" [disabled]="formAlugar.invalid">Criar</button>
+                        <button class="gray-button" type="button" (click)="closePopup()">Voltar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div *ngIf="popupRemover == 1" class="flex column popup-confirmar mini-popup">
+            <h3 class="fs-30">Deseja remover esse lembrete?</h3>
+            <ng-container *ngIf="veiculoAtual">
+                <span>Veículo: {{veiculoAtual.modelo}} - {{veiculoAtual.placa}}</span>
+            </ng-container>
+            <div>
+                <button class="green-button" (click)="removeAlugar()">Remover</button>
+                <button class="gray-button" type="button" (click)="closePopup()">Voltar</button>
+            </div>
+        </div>
+
+        <div *ngIf="popupHideVeiculo == 1" class="flex column popup-confirmar mini-popup">
+            <h3 class="fs-30">Deseja remover esse evento da lista?</h3>
+            <ng-container *ngIf="veiculoAtual">
+                <span>Veículo: {{veiculoAtual.numero_evento}} - {{veiculoAtual.placa_veiculo}}</span>
+            </ng-container>
+            <div>
+                <button class="green-button" (click)="hideVeiculo()">Remover</button>
+                <button class="gray-button" type="button" (click)="closePopup()">Voltar</button>
+            </div>
+        </div>
+        <div id="background-popup"
+            [class.show-background-popup]="popupAlugar == 1 || popupRemover == 1 || popupHideVeiculo">
+        </div>
+    </section>
+
+    <section class="flex main-section" [class.main-section-menu-open]="menu == 1">
+        <div id="main-section-div" class="flex column">
+            <h1 class="font-green">Lista de espera</h1>
+            <ng-container *ngIf="evento">
+                <ng-container *ngIf="evento == ''">
+                    <span>Nenhum evento na lista de espera.</span>
+                </ng-container>
+                <ng-container *ngIf="evento != ''">
+                    <div class="flex" id="div-lista-espera">
+                        <ng-container *ngFor="let event of evento">
+                            <ng-container *ngIf="event.veiculo_assistencial != null && event.show_veiculo == 0">
+                                <div (click)="openHideVeiculo(event.id)" class="flex column lista-card"
+                                    [ngStyle]="{ 'background-color': event.cor }">
+                                    <p class="fs-17 font-white">Número do evento: {{event.numero_evento}}</p>
+                                    <p class="fs-17 font-white">Placa: {{event.placa_veiculo}}</p>
+                                    <p class="fs-17 font-white">Dias: {{event.veiculo_assistencial}} dias</p>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                </ng-container>
+            </ng-container>
+        </div>
+    </section>
+</div>

@@ -1,0 +1,545 @@
+<section id="side-menu-section" class="flex column" [class.menu-open]="menu == 1">
+    <a id="menu-logo" routerLink="#"><img src="./assets/imagens/logo.png"></a>
+    <div id="side-menu-div">
+        <nav>
+            <ul>
+                <a routerLink="">
+                    <li class="active-link">Agenda</li>
+                </a>
+                <a routerLink="/mecanica">
+                    <li>Lista de Mecânicas</li>
+                </a>
+                <a routerLink="/gerar-evento">
+                    <li>Gerar Evento</li>
+                </a>
+                <a routerLink="/relatorio-veiculo">
+                    <li>Relatório de Veículos</li>
+                </a>
+                <a routerLink="/veiculo-assistencial">
+                    <li>Veículos Assistenciais</li>
+                </a>
+            </ul>
+        </nav>
+    </div>
+</section>
+<div class="flex column main-content" [class.main-content-menu-open]="menu == 1">
+    <section id="top-menu-section" class="flex">
+        <img (click)="toggleMenu()" id="menu-control" src="./assets/imagens/menu-icon.png">
+    </section>
+
+    <section class="flex main-section" [class.main-section-menu-open]="menu == 1">
+        <div id="main-section-div" class="flex column">
+            <div *ngIf="mensagem" id="evento-criado-mensagem-div" class="flex">
+                <p>{{mensagem}}</p>
+                <button (click)="clearMensagem()">X</button>
+            </div>
+            <div id="main-section-header" class="flex">
+                <div class="flex main-section-header-div">
+                    <div class="flex column">
+                        <small class="fs-16 font-gray">3 DIAS</small>
+                        <h2 class="fs-24 font-green">Direcionamento</h2>
+                    </div>
+                    <ng-container *ngIf="direcionamento">
+                        <h2 class="fs-17 font-green">({{direcionamento.size}})</h2>
+                    </ng-container>
+                </div>
+                <div class="flex main-section-header-div">
+                    <div class="flex column">
+                        <small class="fs-16 font-gray">5 DIAS</small>
+                        <h2 class="fs-24 font-green">Orçamento</h2>
+                    </div>
+                    <ng-container *ngIf="orcamento">
+                        <h2 class="fs-17 font-green">({{orcamento.size}})</h2>
+                    </ng-container>
+                </div>
+                <div class="flex main-section-header-div">
+                    <div class="flex column">
+                        <small class="fs-16 font-gray">3 DIAS</small>
+                        <h2 class="fs-24 font-green">Cotação de peças</h2>
+                    </div>
+                    <ng-container *ngIf="cotacao">
+                        <h2 class="fs-17 font-green">({{cotacao.size}})</h2>
+                    </ng-container>
+                </div>
+                <div class="flex main-section-header-div">
+                    <div class="flex column">
+                        <h2 class="fs-24 font-green">Recebimento de peças</h2>
+                    </div>
+                    <ng-container *ngIf="recebimento">
+                        <h2 class="fs-17 font-green">({{recebimento.size}})</h2>
+                    </ng-container>
+                </div>
+                <div class="flex main-section-header-div main-section-header-div-no-after">
+                    <div class="flex column">
+                        <h2 class="fs-24 font-green">Em Reparo</h2>
+                    </div>
+                    <ng-container *ngIf="reparo">
+                        <h2 class="fs-17 font-green">({{reparo.size}})</h2>
+                    </ng-container>
+                </div>
+            </div>
+
+            <!-- Lista de Eventos -->
+            <div id="main-section-table" class="flex">
+                <div id="div-direcionamento" class="item-linha">
+                    <ng-container *ngFor="let direc of direcionamento">
+                        <ng-container *ngIf="direc.direcionamento_evento.finalizado == 0 && direc.finalizado == 0">
+                            <div class="linha">
+                                <div (click)="openPopup(direc.evento_id, 'direcionamento', direc.id, '', direc.retorno_id)"
+                                    class="flex column item"
+                                    [ngStyle]="validarDataFundo(direc.direcionamento_evento.data_abertura, direc.direcionamento_evento.cor, 3)">
+                                    <p *ngIf="direc.direcionamento_evento.numero_evento" class="fs-13"
+                                        [ngStyle]="validarDataCor(direc.direcionamento_evento.data_abertura, direc.direcionamento_evento.cor, 3)">
+                                        {{direc.direcionamento_evento.numero_evento}}</p>
+                                    <div class="flex item-div-p">
+                                        <p class="fs-17"
+                                            [ngStyle]="validarDataCor(direc.direcionamento_evento.data_abertura, direc.direcionamento_evento.cor, 3)">
+                                            {{direc.direcionamento_evento.modelo_veiculo}} -
+                                            {{direc.direcionamento_evento.placa_veiculo}}</p>
+                                        <p class="fs-25"
+                                            [ngStyle]="validarDataCor(direc.direcionamento_evento.data_abertura, direc.direcionamento_evento.cor, 3)">
+                                            {{setDataLimite(direc.direcionamento_evento.data_abertura, 3)|date:
+                                            'dd/MM'}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </div>
+
+                <div id="div-orcamento" class="item-linha">
+                    <ng-container *ngFor="let orcam of orcamento">
+                        <div *ngIf="orcam.orcamento_evento.finalizado == 0 && orcam.aprovado == 0" class="linha">
+                            <div (click)="openPopup(orcam.evento_id, 'orcamento', orcam.id, orcam.mecanica_id, orcam.retorno_id)"
+                                class="flex column item"
+                                [ngStyle]="validarDataFundo(orcam.created_at, orcam.orcamento_evento.cor, 5)">
+                                <p class="fs-13" *ngIf="orcam.orcamento_evento.numero_evento"
+                                    [ngStyle]="validarDataCor(orcam.created_at, orcam.orcamento_evento.cor, 5)">
+                                    {{orcam.orcamento_evento.numero_evento}}</p>
+                                <div class="flex item-div-p">
+                                    <div class="flex column">
+                                        <p class="fs-17"
+                                            [ngStyle]="validarDataCor(orcam.created_at, orcam.orcamento_evento.cor, 5)">
+                                            {{orcam.orcamento_evento.modelo_veiculo}} -
+                                            {{orcam.orcamento_evento.placa_veiculo}}</p>
+                                        <p class="fs-16" [ngStyle]="validarDataCor(orcam.created_at, '#979797', 5)">
+                                            {{orcam.orcamento_mecanica.nome}}</p>
+                                    </div>
+                                    <p class="fs-25"
+                                        [ngStyle]="validarDataCor(orcam.created_at, orcam.orcamento_evento.cor, 5)">
+                                        {{setDataLimite(orcam.created_at, 5)|date:
+                                        'dd/MM'}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+
+                <div id="div-cotacao" class="item-linha">
+                    <ng-container *ngFor="let cotac of cotacao">
+                        <div *ngIf="cotac.cotacao_evento.finalizado == 0 && cotac.finalizado == 0" class="linha">
+                            <div (click)="openPopup(cotac.evento_id, 'cotacao', cotac.id , cotac.mecanica_id, cotac.retorno_id)"
+                                class="flex column item"
+                                [ngStyle]="validarDataFundo(cotac.created_at, cotac.cotacao_evento.cor, 3)">
+                                <p class="fs-13" *ngIf="cotac.cotacao_evento.numero_evento"
+                                    [ngStyle]="validarDataCor(cotac.created_at, cotac.cotacao_evento.cor, 3)">
+                                    {{cotac.cotacao_evento.numero_evento}}</p>
+                                <div class="flex item-div-p">
+                                    <div class="flex column">
+                                        <p class="fs-17"
+                                            [ngStyle]="validarDataCor(cotac.created_at, cotac.cotacao_evento.cor, 3)">
+                                            {{cotac.cotacao_evento.modelo_veiculo}} -
+                                            {{cotac.cotacao_evento.placa_veiculo}}</p>
+                                        <p class="fs-16" [ngStyle]="validarDataCor(cotac.created_at, '#979797', 3)">
+                                            {{cotac.cotacao_mecanica.nome}}</p>
+                                    </div>
+                                    <p class="fs-25"
+                                        [ngStyle]="validarDataCor(cotac.created_at, cotac.cotacao_evento.cor, 3)">
+                                        {{setDataLimite(cotac.created_at, 3)|date:
+                                        'dd/MM'}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+
+                <div id="div-recebimento" class="item-linha">
+                    <ng-container *ngFor="let receb of recebimento">
+                        <div *ngIf="receb.recebimento_evento.finalizado == 0 && receb.finalizado == 0" class="linha">
+                            <div (click)="openPopup(receb.evento_id, 'recebimento', receb.id , receb.mecanica_id, receb.retorno_id)"
+                                class="flex column item"
+                                [ngStyle]="validarDataFundo(receb.created_at, receb.recebimento_evento.cor, receb.data_limite)">
+                                <p class="fs-13" *ngIf="receb.recebimento_evento.numero_evento"
+                                    [ngStyle]="validarDataCor(receb.created_at, receb.recebimento_evento.cor, receb.data_limite)">
+                                    {{receb.recebimento_evento.numero_evento}}</p>
+                                <div class="flex item-div-p">
+                                    <div class="flex column">
+                                        <p class="fs-17"
+                                            [ngStyle]="validarDataCor(receb.created_at, receb.recebimento_evento.cor, receb.data_limite)">
+                                            {{receb.recebimento_evento.modelo_veiculo}} -
+                                            {{receb.recebimento_evento.placa_veiculo}}</p>
+                                        <p class="fs-16"
+                                            [ngStyle]="validarDataCor(receb.created_at, '#979797', receb.data_limite)">
+                                            {{receb.recebimento_mecanica.nome}}</p>
+                                    </div>
+                                    <p class="fs-25"
+                                        [ngStyle]="validarDataCor(receb.created_at, receb.recebimento_evento.cor, receb.data_limite)">
+                                        {{setDataLimite(receb.created_at, receb.data_limite)|date:
+                                        'dd/MM'}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+
+                <div id="div-reparo" class="item-linha sem-after">
+                    <ng-container *ngFor="let repar of reparo">
+                        <div *ngIf="repar.reparo_evento.finalizado == 0 && repar.finalizado == 0" class="linha">
+                            <div (click)="openPopup(repar.evento_id, 'reparo', repar.id, repar.mecanica_id, repar.retorno_id)"
+                                class="flex column item"
+                                [ngStyle]="validarDataFundo(repar.created_at, repar.reparo_evento.cor, repar.data_limite)">
+                                <p class="fs-13" *ngIf="repar.reparo_evento.numero_evento"
+                                    [ngStyle]="validarDataCor(repar.created_at, repar.reparo_evento.cor, repar.data_limite)">
+                                    {{repar.reparo_evento.numero_evento}}</p>
+                                <div class="flex item-div-p">
+                                    <div class="flex column">
+                                        <p class="fs-17"
+                                            [ngStyle]="validarDataCor(repar.created_at, repar.reparo_evento.cor, repar.data_limite)">
+                                            {{repar.reparo_evento.modelo_veiculo}} -
+                                            {{repar.reparo_evento.placa_veiculo}}</p>
+                                        <p class="fs-16"
+                                            [ngStyle]="validarDataCor(repar.created_at, '#979797', repar.data_limite)">
+                                            {{repar.reparo_mecanica.nome}}</p>
+                                    </div>
+                                    <p class="fs-25"
+                                        [ngStyle]="validarDataCor(repar.created_at, repar.reparo_evento.cor, repar.data_limite)">
+                                        {{setDataLimite(repar.created_at, repar.data_limite)|date:
+                                        'dd/MM'}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+
+            <!-- Popups -->
+            <div class="popout-confirmar-background"></div>
+            <div class="flex column popup-confirmar" *ngIf="popupDirecionamento == 1">
+                <h3 class="fs-30">GERENCIAR DIRECIONAMENTO</h3>
+                <span *ngIf="evento != ''">{{evento.modelo_veiculo}} - {{evento.placa_veiculo}}</span>
+                <div class="flex flex input-div">
+                    <h4 class="fs-20">Descrição</h4>
+                    <ng-container *ngIf="evento.descricao != null">
+                        <div class="flex column">
+                            <div>
+                                <p class="fs-15">{{evento.descricao}}</p>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="evento.descricao == null">
+                        <div>
+                            <p class="fs-15">Nenhuma descrição incluída.</p>
+                        </div>
+                    </ng-container>
+                </div>
+                <form class="flex column" (ngSubmit)="finalizarEvento()" [formGroup]="formEventoFinalizar">
+                    <div class="flex input-div">
+                        <label class="fs-20" for="observacao_finalizado">Encerrar</label>
+                        <div class="flex popup-input-div">
+                            <input type="text" name="observacao_finalizado"
+                                placeholder="Motivo da finalização do evento" formControlName="observacao_finalizado">
+                            <button class="blue-button" [disabled]="formEventoFinalizar.invalid">Finalizar</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="flex input-div">
+                    <label></label>
+                    <div>
+                        <button class="green-button" type="button"
+                            (click)="openPopup(evento.id, 'novo-orcamento', '', '', retornoId)">Novo
+                            Orçamento</button>
+                        <button class="gray-button" type="button" (click)="closePopup()">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex column popup-confirmar" *ngIf="popupOrcamento == 1">
+                <h3 class="fs-30">GERENCIAR ORÇAMENTO</h3>
+                <span *ngIf="evento != ''">{{evento.modelo_veiculo}} - {{evento.placa_veiculo}}</span>
+                <div class="flex flex input-div">
+                    <h4 class="fs-20">Observações salvas</h4>
+                    <ng-container *ngIf="observacao != ''">
+                        <div class="flex column">
+                            <div *ngFor="let obs of observacao">
+                                <p class="fs-15">{{obs.created_at|date:'dd/MM'}} {{obs.hora}} - {{obs.observacao}}</p>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="observacao == ''">
+                        <div>
+                            <p class="fs-15">Nenhuma observação incluída.</p>
+                        </div>
+                    </ng-container>
+                </div>
+                <form class="flex column" (ngSubmit)="createOrcamentoObservacao()"
+                    [formGroup]="formOrcamentoObservacao">
+                    <div class="flex input-div">
+                        <label class="fs-20" for="observacao">Observação</label>
+                        <div class="flex popup-input-div">
+                            <input type="text" name="observacao" placeholder="Inclua uma nova observação ao orçamento"
+                                formControlName="observacao">
+                            <button class="blue-button" [disabled]="formOrcamentoObservacao.invalid">Gerar
+                                observação</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="flex input-div">
+                    <label></label>
+                    <div>
+                        <button class="green-button" type="button" (click)="createCotacao()">Aprovar
+                            orçamento</button>
+                        <button class="gray-button" type="button" (click)="closePopup()">Cancelar</button>
+                        <button class="blue-button" type="button"
+                            (click)="openPopup(evento.id, 'novo-orcamento', '', '', retornoId)">Novo
+                            Orçamento</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex column popup-confirmar" *ngIf="popupNovoOrcamento == 1">
+                <h3 class="fs-30">NOVO ORÇAMENTO</h3>
+                <span *ngIf="evento != ''">{{evento.modelo_veiculo}} - {{evento.placa_veiculo}}</span>
+                <form class="flex column" (ngSubmit)="createOrcamento()" [formGroup]="formOrcamento">
+                    <div class="flex input-div">
+                        <label class="fs-20" for="observacao">Observação</label>
+                        <input type="text" name="observacao" placeholder="Campo não obrigatório"
+                            formControlName="observacao">
+                    </div>
+                    <div class="flex input-div">
+                        <label class="fs-20" for="mecanica">Mecânica</label>
+                        <input id="input-open-lista-mecanica" type="text" disabled name="mecanica"
+                            placeholder="Selecione uma mecânica" value="{{mecanicaEscolhidaNome}}">
+                        <button *ngIf="listaMecanica == 0" id="button-open-lista-mecanica" (click)="showListaMecanica()"
+                            type="button">></button>
+                        <button *ngIf="listaMecanica == 1" id="button-close-lista-mecanica"
+                            (click)="closeListaMecanica()" type="button">></button>
+
+                        <div *ngIf="listaMecanica == 1" id="div-lista-mecanica" class="flex column">
+                            <div *ngFor="let mec of mecanica">
+                                <p class="fs-12" (click)="changeMecanicaValue(mec.id, mec.nome, mec.cidade)"
+                                    (click)="closeListaMecanica()">{{mec.nome}} - {{mec.cidade}}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex input-div">
+                        <label></label>
+                        <div>
+                            <button class="green-button" [disabled]="mecanicaEscolhidaNome == ''">Gerar</button>
+                            <button class="gray-button" type="button" (click)="closePopup()">Cancelar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="flex column popup-confirmar" *ngIf="popupCotacao == 1">
+                <h3 class="fs-30">GERENCIAR COTAÇÃO</h3>
+                <span *ngIf="evento != ''">{{evento.modelo_veiculo}} - {{evento.placa_veiculo}}</span>
+                <div class="flex flex input-div">
+                    <h4 class="fs-20">Observações salvas</h4>
+                    <ng-container *ngIf="observacao != ''">
+                        <div class="flex column">
+                            <div *ngFor="let obs of observacao">
+                                <p class="fs-15">{{obs.created_at|date:'dd/MM'}} {{obs.hora}} - {{obs.observacao}}</p>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="observacao == ''">
+                        <div>
+                            <p class="fs-15">Nenhuma observação incluída.</p>
+                        </div>
+                    </ng-container>
+                </div>
+                <form class="flex column" (ngSubmit)="createCotacaoObservacao()" [formGroup]="formCotacaoObservacao">
+                    <div class="flex input-div">
+                        <label class="fs-20" for="observacao">Observação</label>
+                        <div class="flex popup-input-div">
+                            <input type="text" name="observacao" placeholder="Inclua uma nova observação na cotação"
+                                formControlName="observacao">
+                            <button class="blue-button" [disabled]="formCotacaoObservacao.invalid">Gerar
+                                observação</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="flex input-div">
+                    <label></label>
+                    <div>
+                        <button class="green-button" type="button"
+                            (click)="openPopup(evento.id, 'novo-recebimento', '', mecanicaId, retornoId)">Finalizar
+                            cotação</button>
+                        <button class="gray-button" type="button" (click)="closePopup()">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex column popup-confirmar" *ngIf="popupNovoRecebimento == 1">
+                <h3 class="fs-30">NOVO RECEBIMENTO DE PEÇAS</h3>
+                <span *ngIf="evento != ''">{{evento.modelo_veiculo}} - {{evento.placa_veiculo}}</span>
+                <form class="flex column" (ngSubmit)="createRecebimento()" [formGroup]="formRecebimento">
+                    <div class="flex input-div">
+                        <label class="fs-20" for="observacao">Observação</label>
+                        <input type="text" name="observacao" placeholder="Campo não obrigatório"
+                            formControlName="observacao">
+                    </div>
+                    <div class="flex input-div">
+                        <label class="fs-20" for="data_limite">Data limite</label>
+                        <input type="number" name="data_limite" min="1" formControlName="data_limite"
+                            placeholder="Insira a quantidade de dias">
+                    </div>
+                    <div class="flex input-div">
+                        <label></label>
+                        <div>
+                            <button class="green-button" [disabled]="formRecebimento.invalid">Gerar</button>
+                            <button class="gray-button" type="button" (click)="closePopup()">Cancelar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="flex column popup-confirmar" *ngIf="popupRecebimento == 1">
+                <h3 class="fs-30">GERENCIAR RECEBIMENTO DE PEÇAS</h3>
+                <span *ngIf="evento != ''">{{evento.modelo_veiculo}} - {{evento.placa_veiculo}}</span>
+                <div class="flex flex input-div">
+                    <h4 class="fs-20">Observações salvas</h4>
+                    <ng-container *ngIf="observacao != ''">
+                        <div class="flex column">
+                            <div *ngFor="let obs of observacao">
+                                <p class="fs-15">{{obs.created_at|date:'dd/MM'}} {{obs.hora}} - {{obs.observacao}}</p>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="observacao == ''">
+                        <div>
+                            <p class="fs-15">Nenhuma observação incluída.</p>
+                        </div>
+                    </ng-container>
+                </div>
+                <form class="flex column" (ngSubmit)="createRecebimentoObservacao()"
+                    [formGroup]="formRecebimentoObservacao">
+                    <div class="flex input-div">
+                        <label class="fs-20" for="observacao">Observação</label>
+                        <div class="flex popup-input-div">
+                            <input type="text" name="observacao" placeholder="Inclua uma nova observação ao recebimento"
+                                formControlName="observacao">
+                            <button class="blue-button" [disabled]="formRecebimentoObservacao.invalid">Gerar
+                                observação</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="flex input-div">
+                    <label></label>
+                    <div>
+                        <button class="green-button" type="button"
+                            (click)="openPopup(evento.id, 'novo-reparo', '', mecanicaId, retornoId)">Finalizar
+                            recebimento</button>
+                        <button class="gray-button" type="button" (click)="closePopup()">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex column popup-confirmar" *ngIf="popupNovoReparo == 1">
+                <h3 class="fs-30">NOVO REPARO</h3>
+                <span *ngIf="evento != ''">{{evento.modelo_veiculo}} - {{evento.placa_veiculo}}</span>
+                <form class="flex column" (ngSubmit)="createReparo()" [formGroup]="formReparo">
+                    <div class="flex input-div">
+                        <label class="fs-20" for="observacao">Observação</label>
+                        <input type="text" name="observacao" placeholder="Campo não obrigatório"
+                            formControlName="observacao">
+                    </div>
+                    <div class="flex input-div">
+                        <label class="fs-20" for="data_limite">Data limite</label>
+                        <input type="number" min="1" placeholder="Insira a quantidade de dias" name="data_limite"
+                            formControlName="data_limite">
+                    </div>
+                    <div class="flex input-div">
+                        <label></label>
+                        <div>
+                            <button class="green-button" [disabled]="formReparo.invalid">Gerar</button>
+                            <button class="gray-button" type="button" (click)="closePopup()">Cancelar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="flex column popup-confirmar" *ngIf="popupReparo == 1">
+                <h3 class="fs-30">GERENCIAR REPARO</h3>
+                <span *ngIf="evento != ''">{{evento.modelo_veiculo}} - {{evento.placa_veiculo}}</span>
+                <div class="flex flex input-div">
+                    <h4 class="fs-20">Complementos salvos</h4>
+                    <ng-container *ngIf="complemento != ''">
+                        <div class="flex column">
+                            <div *ngFor="let complem of complemento">
+                                <p class="fs-15">{{complem.created_at|date:'dd/MM'}} {{complem.hora}} -
+                                    {{complem.observacao}}</p>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="complemento == ''">
+                        <div>
+                            <p class="fs-15">Nenhum complemento incluído.</p>
+                        </div>
+                    </ng-container>
+                </div>
+                <form class="flex column" (ngSubmit)="createReparoComplemento()" [formGroup]="formReparoComplemento">
+                    <div class="flex input-div">
+                        <label class="fs-20" for="complemento">Complemento</label>
+                        <div class="flex popup-input-div">
+                            <input type="text" name="complemento" placeholder="Inclua um novo complemento ao reparo"
+                                formControlName="observacao">
+                            <button class="blue-button" [disabled]="formReparoComplemento.invalid">Gerar
+                                complemento</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="flex flex input-div">
+                    <h4 class="fs-20">Observações salvas</h4>
+                    <ng-container *ngIf="observacao != ''">
+                        <div class="flex column">
+                            <div *ngFor="let obs of observacao">
+                                <p class="fs-15">{{obs.created_at|date:'dd/MM'}} {{obs.hora}} - {{obs.observacao}}</p>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="observacao == ''">
+                        <div>
+                            <p class="fs-15">Nenhuma observação incluída.</p>
+                        </div>
+                    </ng-container>
+                </div>
+                <form class="flex column" (ngSubmit)="createReparoObservacao()" [formGroup]="formReparoObservacao">
+                    <div class="flex input-div">
+                        <label class="fs-20" for="observacao">Observação</label>
+                        <div class="flex popup-input-div">
+                            <input type="text" name="observacao" placeholder="Inclua uma nova observação ao reparo"
+                                formControlName="observacao">
+                            <button class="blue-button" [disabled]="formReparoObservacao.invalid">Gerar
+                                observação</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="flex input-div">
+                    <label></label>
+                    <div>
+                        <button class="green-button" type="button" (click)="finalizarReparo()">Finalizar
+                            reparo</button>
+                        <button class="gray-button" type="button" (click)="closePopup()">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="background-popup"
+                [class.show-background-popup]="popupReparo == 1 || popupCotacao == 1 || popupOrcamento == 1 || popupDirecionamento == 1">
+            </div>
+        </div>
+    </section>
+</div>

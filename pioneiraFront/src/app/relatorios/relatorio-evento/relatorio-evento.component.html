@@ -1,0 +1,409 @@
+<section id="side-menu-section" class="flex column" [class.menu-open]="menu == 1">
+    <a id="menu-logo" routerLink="#"><img src="./assets/imagens/logo.png"></a>
+    <div id="side-menu-div">
+        <nav>
+            <ul>
+                <a routerLink="">
+                    <li>Agenda</li>
+                </a>
+                <a routerLink="/mecanica">
+                    <li>Lista de Mecânicas</li>
+                </a>
+                <a routerLink="/gerar-evento">
+                    <li>Gerar Evento</li>
+                </a>
+                <a routerLink="/relatorio-veiculo">
+                    <li class="active-link">Relatório de Veículos</li>
+                </a>
+                <a routerLink="/veiculo-assistencial">
+                    <li>Veículos Assistenciais</li>
+                </a>
+            </ul>
+        </nav>
+    </div>
+</section>
+<div class="flex column main-content" [class.main-content-menu-open]="menu == 1">
+    <section id="top-menu-section" class="flex">
+        <img (click)="toggleMenu()" id="menu-control" src="./assets/imagens/menu-icon.png">
+    </section>
+
+    <section class="flex main-section" [class.main-section-menu-open]="menu == 1">
+        <div id="main-section-div" class="flex column" *ngIf="evento">
+            <div *ngIf="mensagem" id="evento-criado-mensagem-div" class="flex">
+                <p>{{mensagem}}</p>
+                <button (click)="clearMensagem()">X</button>
+            </div>
+            <h1 class="font-green">RELATÓRIO DO EVENTO</h1>
+            <span>{{evento.modelo_veiculo}} - {{evento.placa_veiculo}}</span>
+            <button type="button" class="green-button" [disabled]="evento.finalizado == 0" (click)="openPopup()">Criar
+                retorno</button>
+            <ng-container *ngIf="retorno && reparo && cotacao && orcamento">
+                <ng-container *ngIf="retorno.length && reparo.length && cotacao.length && orcamento.length">
+                    <ng-container *ngIf="retorno[0]">
+                        <ng-container *ngFor="let retor of retorno">
+                            <ng-container *ngFor="let repar of reparo">
+                                <ng-container *ngIf="repar.retorno_id == retor.id">
+                                    <div>
+                                        <h3>Reparo finalizado - {{repar.updated_at|date: 'dd/MM'}}</h3>
+                                    </div>
+                                </ng-container>
+                            </ng-container>
+                            <ng-container *ngIf="reparo[0]">
+                                <ng-container *ngFor="let repar of reparo">
+                                    <ng-container *ngIf="repar.retorno_id == retor.id">
+                                        <div>
+                                            <h3>Reparo criado - {{repar.created_at|date: 'dd/MM'}}</h3>
+                                            <div class="flex">
+                                                <h5 class="fs-15">Mecânica: </h5>
+                                                <div class="flex column">
+                                                    <p class="fs-15">{{repar.reparo_mecanica.nome}}</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex">
+                                                <h5 class="fs-15">Complementos: </h5>
+                                                <div class="flex column">
+                                                    <ng-container *ngIf="repar.reparo_complemento != ''">
+                                                        <div *ngFor="let obs of repar.reparo_complemento">
+                                                            <p class="fs-15">{{obs.created_at|date:'dd/MM'}} -
+                                                                {{obs.observacao}}</p>
+                                                        </div>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="repar.reparo_complemento == ''">
+                                                        <div>
+                                                            <p class="fs-15">Nenhum complemento</p>
+                                                        </div>
+                                                    </ng-container>
+                                                </div>
+                                            </div>
+                                            <div class="flex">
+                                                <h5 class="fs-15">Observações: </h5>
+                                                <div class="flex column">
+                                                    <ng-container *ngIf="repar.reparo_observacao != ''">
+                                                        <div *ngFor="let obs of repar.reparo_observacao">
+                                                            <p class="fs-15">{{obs.created_at|date:'dd/MM'}} -
+                                                                {{obs.observacao}}</p>
+                                                        </div>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="repar.reparo_observacao == ''">
+                                                        <div>
+                                                            <p class="fs-15">Nenhuma observação</p>
+                                                        </div>
+                                                    </ng-container>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ng-container>
+                                </ng-container>
+                            </ng-container>
+                            <ng-container *ngIf="recebimento[0]">
+                                <ng-container *ngFor="let receb of recebimento">
+                                    <ng-container *ngIf="receb.retorno_id == receb.id">
+                                        <div>
+                                            <h3>Recebimento criado - {{receb.created_at|date: 'dd/MM'}}</h3>
+                                            <div class="flex">
+                                                <h5 class="fs-15">Mecânica: </h5>
+                                                <div class="flex column">
+                                                    <p class="fs-15">{{receb.recebimento_mecanica.nome}}</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex">
+                                                <h5 class="fs-15">Observações: </h5>
+                                                <div class="flex column">
+                                                    <ng-container *ngIf="receb.recebimento_observacao != ''">
+                                                        <div *ngFor="let obs of receb.recebimento_observacao">
+                                                            <p class="fs-15">{{obs.created_at|date:'dd/MM'}} -
+                                                                {{obs.observacao}}</p>
+                                                        </div>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="receb.recebimento_observacao == ''">
+                                                        <div>
+                                                            <p class="fs-15">Nenhuma observação</p>
+                                                        </div>
+                                                    </ng-container>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ng-container>
+                                </ng-container>
+                            </ng-container>
+                            <ng-container *ngIf="cotacao[0]">
+                                <ng-container *ngFor="let cotac of cotacao">
+                                    <ng-container *ngIf="cotac.retorno_id == retor.id">
+                                        <div>
+                                            <h3>Cotação criada - {{cotac.created_at|date: 'dd/MM'}}</h3>
+                                            <div class="flex">
+                                                <h5 class="fs-15">Mecânica: </h5>
+                                                <div class="flex column">
+                                                    <p class="fs-15">{{cotac.cotacao_mecanica.nome}}</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex">
+                                                <h5 class="fs-15">Observações: </h5>
+                                                <div class="flex column">
+                                                    <ng-container *ngIf="cotacao[0].cotacao_observacao != ''">
+                                                        <div *ngFor="let obs of cotacao[0].cotacao_observacao">
+                                                            <p class="fs-15">{{obs.created_at|date:'dd/MM'}} -
+                                                                {{obs.observacao}}</p>
+                                                        </div>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="cotacao[0].cotacao_observacao == ''">
+                                                        <div>
+                                                            <p class="fs-15">Nenhuma observação</p>
+                                                        </div>
+                                                    </ng-container>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ng-container>
+                                </ng-container>
+                            </ng-container>
+                            <ng-container *ngIf="orcamento[0]">
+                                <ng-container *ngFor="let orcam of orcamento">
+                                    <ng-container *ngIf="orcam.retorno_id == retor.id">
+                                        <div>
+                                            <h3>Orçamento criado - {{orcam.created_at|date: 'dd/MM'}}</h3>
+                                            <div class="flex">
+                                                <h5 class="fs-15">Mecânica: </h5>
+                                                <div class="flex column">
+                                                    <p class="fs-15">{{orcam.orcamento_mecanica.nome}}</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex">
+                                                <h5 class="fs-15">Observações:: </h5>
+                                                <div class="flex column">
+                                                    <ng-container *ngIf="orcam.orcamento_observacao != ''">
+                                                        <div *ngFor="let obs of orcam.orcamento_observacao">
+                                                            <p class="fs-15">{{obs.created_at|date:'dd/MM'}} -
+                                                                {{obs.observacao}}</p>
+                                                        </div>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="orcam.orcamento_observacao == ''">
+                                                        <div>
+                                                            <p class="fs-15">Nenhuma observação</p>
+                                                        </div>
+                                                    </ng-container>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ng-container>
+                                </ng-container>
+                            </ng-container>
+                            <div>
+                                <h3>Retorno criado - {{retor.created_at|date: 'dd/MM'}}</h3>
+                                <div class="flex">
+                                    <h5 class="fs-15">Descrição: </h5>
+                                    <div class="flex column">
+                                        <ng-container *ngIf="retor.observacao != ''">
+                                            <div>
+                                                <p class="fs-15">{{retor.observacao}}</p>
+                                            </div>
+                                        </ng-container>
+                                        <ng-container *ngIf="retor.observacao == null">
+                                            <div>
+                                                <p class="fs-15">Nenhuma descrição</p>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+            </ng-container>
+            <ng-container *ngIf="reparo">
+                <ng-container *ngIf="reparo.length">
+                    <ng-container *ngIf="reparo[0]">
+                        <ng-container *ngIf="reparo[0].finalizado == 1">
+                            <div>
+                                <h3>Reparo finalizado - {{reparo[0].updated_at|date: 'dd/MM'}}</h3>
+                            </div>
+                        </ng-container>
+                        <div>
+                            <h3>Reparo criado - {{reparo[0].created_at|date: 'dd/MM'}}</h3>
+                            <div class="flex">
+                                <h5 class="fs-15">Mecânica: </h5>
+                                <div class="flex column">
+                                    <p class="fs-15">{{reparo[0].reparo_mecanica.nome}}</p>
+                                </div>
+                            </div>
+                            <div class="flex">
+                                <h5 class="fs-15">Complementos: </h5>
+                                <div class="flex column">
+                                    <ng-container *ngIf="reparo[0].reparo_complemento != ''">
+                                        <div *ngFor="let obs of reparo[0].reparo_complemento">
+                                            <p class="fs-15">{{obs.created_at|date:'dd/MM'}} - {{obs.observacao}}</p>
+                                        </div>
+                                    </ng-container>
+                                    <ng-container *ngIf="reparo[0].reparo_complemento == ''">
+                                        <div>
+                                            <p class="fs-15">Nenhum complemento</p>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="flex">
+                                <h5 class="fs-15">Observações: </h5>
+                                <div class="flex column">
+                                    <ng-container *ngIf="reparo[0].reparo_observacao != ''">
+                                        <div *ngFor="let obs of reparo[0].reparo_observacao">
+                                            <p class="fs-15">{{obs.created_at|date:'dd/MM'}} - {{obs.observacao}}</p>
+                                        </div>
+                                    </ng-container>
+                                    <ng-container *ngIf="reparo[0].reparo_observacao == ''">
+                                        <div>
+                                            <p class="fs-15">Nenhuma observação</p>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </ng-container>
+            </ng-container>
+
+            <ng-container *ngIf="recebimento">
+                <ng-container *ngIf="recebimento.length">
+                    <ng-container *ngIf="recebimento[0]">
+                        <ng-container *ngIf="recebimento[0].finalizado == 1">
+                            <div>
+                                <h3>Recebimento finalizado - {{recebimento[0].updated_at|date: 'dd/MM'}}</h3>
+                            </div>
+                        </ng-container>
+                        <div>
+                            <h3>Recebimento criado - {{recebimento[0].created_at|date: 'dd/MM'}}</h3>
+                            <div class="flex">
+                                <h5 class="fs-15">Mecânica: </h5>
+                                <div class="flex column">
+                                    <p class="fs-15">{{recebimento[0].recebimento_mecanica.nome}}</p>
+                                </div>
+                            </div>
+                            <div class="flex">
+                                <h5 class="fs-15">Observações:: </h5>
+                                <div class="flex column">
+                                    <ng-container *ngIf="recebimento[0].recebimento_observacao != ''">
+                                        <div *ngFor="let obs of recebimento[0].recebimento_observacao">
+                                            <p class="fs-15">{{obs.created_at|date:'dd/MM'}} - {{obs.observacao}}</p>
+                                        </div>
+                                    </ng-container>
+                                    <ng-container *ngIf="recebimento[0].recebimento_observacao == ''">
+                                        <div>
+                                            <p class="fs-15">Nenhuma observação</p>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </ng-container>
+            </ng-container>
+
+            <ng-container *ngIf="cotacao">
+                <ng-container *ngIf="cotacao.length">
+                    <ng-container *ngIf="cotacao[0]">
+                        <div>
+                            <h3>Cotação criada - {{cotacao[0].created_at|date: 'dd/MM'}}</h3>
+                            <div class="flex">
+                                <h5 class="fs-15">Mecânica: </h5>
+                                <div class="flex column">
+                                    <p class="fs-15">{{cotacao[0].cotacao_mecanica.nome}}</p>
+                                </div>
+                            </div>
+                            <div class="flex">
+                                <h5 class="fs-15">Observações:: </h5>
+                                <div class="flex column">
+                                    <ng-container *ngIf="cotacao[0].cotacao_observacao != ''">
+                                        <div *ngFor="let obs of cotacao[0].cotacao_observacao">
+                                            <p class="fs-15">{{obs.created_at|date:'dd/MM'}} - {{obs.observacao}}</p>
+                                        </div>
+                                    </ng-container>
+                                    <ng-container *ngIf="cotacao[0].cotacao_observacao == ''">
+                                        <div>
+                                            <p class="fs-15">Nenhuma observação</p>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </ng-container>
+            </ng-container>
+            <ng-container *ngIf="orcamento">
+                <ng-container *ngIf="orcamento.length">
+                    <ng-container *ngFor="let orcam of orcamento">
+                        <ng-container *ngIf="orcam.retorno_id == 0 || orcam.retorno_id == null">
+                            <div>
+                                <h3>Orçamento criado - {{orcam.created_at|date: 'dd/MM'}}</h3>
+                                <div class="flex">
+                                    <h5 class="fs-15">Mecânica: </h5>
+                                    <div class="flex column">
+                                        <p class="fs-15">{{orcam.orcamento_mecanica.nome}}</p>
+                                    </div>
+                                </div>
+                                <div class="flex">
+                                    <h5 class="fs-15">Observações:: </h5>
+                                    <div class="flex column">
+                                        <ng-container *ngIf="orcam.orcamento_observacao != ''">
+                                            <div *ngFor="let obs of orcam.orcamento_observacao">
+                                                <p class="fs-15">{{obs.created_at|date:'dd/MM'}} - {{obs.observacao}}
+                                                </p>
+                                            </div>
+                                        </ng-container>
+                                        <ng-container *ngIf="orcam.orcamento_observacao == ''">
+                                            <div>
+                                                <p class="fs-15">Nenhuma observação</p>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+            </ng-container>
+            <div>
+                <h3>Evento criado - {{evento.data_abertura|date: 'dd/MM'}}</h3>
+                <div class="flex">
+                    <h5 class="fs-15">Número do evento: </h5>
+                    <div class="flex column">
+                        <p class="fs-15">{{evento.numero_evento}}</p>
+                    </div>
+                </div>
+                <div class="flex">
+                    <h5 class="fs-15">Descrição: </h5>
+                    <div class="flex column">
+                        <ng-container *ngIf="evento.descricao != ''">
+                            <div>
+                                <p class="fs-15">{{evento.descricao}}</p>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="evento.descricao == null">
+                            <div>
+                                <p class="fs-15">Nenhuma descrição</p>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex column popup-confirmar" *ngIf="popupRetorno == 1">
+                <h3 class="fs-30">Criar retorno</h3>
+                <form class="flex column" (ngSubmit)="criarRetorno()" [formGroup]="formRetorno">
+                    <div class="flex input-div">
+                        <label class="fs-20" for="observacao">Descrição</label>
+                        <textarea type="text" name="observacao" placeholder="Digite a descrição aqui"
+                            formControlName="observacao"></textarea>
+                    </div>
+                    <div class="flex input-div">
+                        <label></label>
+                        <div>
+                            <button class="green-button">Criar</button>
+                            <button class="gray-button" type="button" (click)="closePopup()">Cancelar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div id="background-popup" [class.show-background-popup]="popupRetorno == 1"></div>
+        </div>
+    </section>
+</div>
